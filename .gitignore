@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C-extensions
+*.so
+
+# Ambientes Virtuais Python
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Variáveis de Ambiente e Chaves de API (Segurança)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Arquivos de Configuração do Streamlit com Segredos
+.streamlit/secrets.toml
+
+# Banco de Dados Vetorial e Cache do RAG
+faiss_index/
+chroma_db/
+vectorstore/
+*.db
+*.sqlite3
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Configurações de IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Builds, Distribuição e Docker
+build/
+dist/
+*.egg-info/
+.docker/
