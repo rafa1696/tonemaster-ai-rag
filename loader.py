@@ -33,7 +33,10 @@ def get_embeddings_instance(provider: str = "huggingface", api_key: Optional[str
             from langchain_huggingface import HuggingFaceEmbeddings
         except ImportError:
             from langchain_community.embeddings import HuggingFaceEmbeddings
-        return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        return HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={"device": "cpu"}
+        )
 
 
 def load_csv_document(source: Union[str, io.BytesIO], filename: str = "dados.csv") -> List[Document]:
