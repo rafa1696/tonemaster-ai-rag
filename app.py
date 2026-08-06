@@ -83,7 +83,7 @@ with st.sidebar:
         model_options = [
             "llama-3.3-70b-versatile",
             "llama-3.1-8b-instant",
-            "mixtral-8x7b-32768",
+            "mixtral-8x7b-32768", # Descontinuado
             "gemma2-9b-it"
         ]
         selected_model = st.selectbox("Modelo Groq:", model_options)
@@ -247,8 +247,13 @@ else:
         with st.chat_message("assistant"):
             with st.spinner(f"Consultando documentos com {provider} ({selected_model})..."):
                 try:
+                    current_rag_chain = build_qa_chain(
+                        vectorstore=st.session_state.vectorstore, 
+                        provider=provider.lower().replace("google ", ""), 
+                        api_key=api_key, model_name=selected_model)
+
                     result = query_agent(
-                        rag_chain=st.session_state.rag_chain,
+                        rag_chain=current_rag_chain,
                         question=prompt,
                         chat_history=st.session_state.chat_history
                     )
