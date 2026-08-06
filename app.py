@@ -64,6 +64,9 @@ if "rag_chain" not in st.session_state:
 if "loaded_docs_info" not in st.session_state:
     st.session_state.loaded_docs_info = []
 
+if "last_failed_prompt" not in st.session_state:
+    st.session_state.last_prompt = None
+
 # Header Principal
 st.markdown('<div class="main-title">🤖 Agente IA Multiprovedor - Leitor de PDFs & CSVs</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">Consulte manuais e dados em tabelas utilizando modelos Groq, Google Gemini ou OpenAI.</div>', unsafe_allow_html=True)
@@ -239,10 +242,19 @@ else:
                         st.markdown(f"**Fonte:** `{src['source']}` | **Tipo:** `{src['type']}`")
                         st.caption(src["content"])
 
-    if prompt := st.chat_input("Pergunte sobre os equipamentos, timbres ou manuais dos documentos..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+    prompt = st.chat_input("Pergunte sobre os equipamentos, timbres ou manuais dos documentos..")
+
+    is_retry = False
+    if not prompt and st.session_state.get("retry_prompt"):
+        prompt = st.session_state.last_failed_prompt
+        st.session_state.retry_prompt = False
+        is_retry = True
+    
+    if prompt:
+        if not is_retry:
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
 
         with st.chat_message("assistant"):
             with st.spinner(f"Consultando documentos com {provider} ({selected_model})..."):
@@ -286,5 +298,18 @@ else:
                     })
                     st.session_state.chat_history.append((prompt, answer))
 
+                    st.session_state.last_failed_prompt = None
+                    st.session_state.last_error_msg = None
+
                 except Exception as e:
-                    st.error(f"Erro ao consultar modelo {provider}: {e}")
+                    st.session_state.last_failed_prompt = prompt
+
+                    st.error(f"Erro ao consultar modelo")
+                    st.session_state.last_error_msg = e
+
+    if st.session_state.get("last_failed_prompt"):
+        st.warning(f" A consulta anterior falhou: {st.session_state.last_error_msg}")
+
+        if st.button("🔄 Tentar novamente com o modelo selecionado", key="btn_retry"):
+            st.session_state.retry_prompt = True
+            st.rerun()
