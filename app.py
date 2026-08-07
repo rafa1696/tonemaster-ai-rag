@@ -65,7 +65,7 @@ if "loaded_docs_info" not in st.session_state:
     st.session_state.loaded_docs_info = []
 
 if "last_failed_prompt" not in st.session_state:
-    st.session_state.last_prompt = None
+    st.session_state.last_failed_prompt = None
 
 # Header Principal
 st.markdown('<div class="main-title">🤖 Agente IA Multiprovedor - Leitor de PDFs & CSVs</div>', unsafe_allow_html=True)

@@ -1,12 +1,8 @@
 from typing import List, Tuple, Dict, Any, Optional
 import os
 
-try:
-    from langchain_classic.chains import create_retrieval_chain, create_history_aware_retriever
-    from langchain_classic.chains.combine_documents import create_stuff_documents_chain
-except ImportError:
-    from langchain.chains import create_retrieval_chain, create_history_aware_retriever
-    from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_classic.chains import create_retrieval_chain, create_history_aware_retriever
+from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
@@ -53,8 +49,8 @@ def build_qa_chain(vectorstore: FAISS, provider: str, api_key: str, model_name: 
     llm = get_llm_instance(provider=provider, model_name=model_name, api_key=api_key)
     
     retriever = vectorstore.as_retriever(
-        search_type="similarity",
-        search_kwargs={"k": 5}
+        search_type="mmr",
+        search_kwargs={"k": 5, "fetch_k": 10, "lambda_mult": 0.7}
     )
     
     contextualize_q_system_prompt = (

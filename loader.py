@@ -7,6 +7,11 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from pypdf import PdfReader
+import streamlit as st
+
+# O @st.cache_resource faz com que o modelo seja carregado na memória apenas uma vez,
+# otimizando o desempenho da aplicação.
+@st.cache_resource
 
 # Imports dinâmicos/condicionais para os modelos de embeddings
 def get_embeddings_instance(provider: str = "huggingface", api_key: Optional[str] = None):
@@ -44,31 +49,26 @@ def load_csv_document(source: Union[str, io.BytesIO], filename: str = "dados.csv
     Carrega e processa um arquivo CSV convertendo cada linha em um Document contendo
     uma representação em texto estruturado e metadados associados.
     """
-    if isinstance(source, str):
-        df = pd.read_csv(source)
-    else:
-        df = pd.read_csv(source)
+    df = pd.read_csv(source)
     
     documents = []
     for idx, row in df.iterrows():
-        content_lines = []
-        for col in df.columns:
-            val = row[col]
-            if pd.notna(val) and str(val).strip() != "":
-                content_lines.append(f"• **{col}**: {val}")
-        
-        page_content = f"### [Registro CSV - Linha {idx + 1} ({filename})]\n" + "\n".join(content_lines)
-        
         metadata = {
             "source": filename,
             "row": idx + 1,
             "type": "csv"
         }
-        
-        for key in ["Artista", "Album_Era", "Ano", "Guitarra_Principal"]:
-            if key in row and pd.notna(row[key]):
-                metadata[key.lower()] = str(row[key])
 
+        content_lines = []
+
+        for col in df.columns:
+            val = row[col]
+            if pd.notna(val) and str(val).strip() != "":
+                content_lines.append(f"• **{col}**: {val}")
+                metadata[col.lower().replace(" ", "_")] = str(val)
+        
+        page_content = f"### [Registro CSV - Linha {idx + 1} ({filename})]\n" + "\n".join(content_lines)
+        
         documents.append(Document(page_content=page_content, metadata=metadata))
     
     return documents
