@@ -104,9 +104,9 @@ with st.sidebar:
         
     else:  # OpenAI
         model_options = [
-            "gpt-4o-mini",
-            "gpt-4o",
-            "gpt-3.5-turbo"
+            "gpt-5.5",
+            "gpt-5-mini",
+            "gpt-4.1"
         ]
         selected_model = st.selectbox("Modelo OpenAI:", model_options)
         env_key = os.getenv("OPENAI_API_KEY", "")
