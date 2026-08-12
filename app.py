@@ -11,9 +11,9 @@ load_dotenv()
 
 # Configuração da página Streamlit
 st.set_page_config(
-    page_title="Agente IA - Leitor de PDFs e CSVs",
-    page_icon="🤖",
-    layout="wide",
+    page_title="Tone Master AI",
+    page_icon="🎸",
+    layout="centered",
     initial_sidebar_state="expanded"
 )
 
@@ -68,7 +68,7 @@ if "last_failed_prompt" not in st.session_state:
     st.session_state.last_failed_prompt = None
 
 # Header Principal
-st.markdown('<div class="main-title">🤖 Agente IA Multiprovedor - Leitor de PDFs & CSVs</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">🎸 Tone Master AI</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">Consulte manuais e dados em tabelas utilizando modelos Groq, Google Gemini ou OpenAI.</div>', unsafe_allow_html=True)
 
 # Sidebar - Seleção do Provedor e API Keys
