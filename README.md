@@ -28,26 +28,28 @@ A arquitetura do projeto é baseada em 3 componentes principais: **Interface & S
 ```mermaid
 flowchart TD
     subgraph UI ["1. Interface (Streamlit - app.py)"]
-        UserInput["Usuário faz uma pergunta"]
-        Sidebar["Seleção de Provedor (Groq / Gemini / OpenAI) & Arquivos (PDF/CSV)"]
+        UserInput["Perguntas do Usuário"]
+        Sidebar["Seleção de Provedor & Upload de Docs"]
     end
 
     subgraph ETL ["2. Ingestão e Vetorização (loader.py)"]
-        CSVLoader["Carregador de CSV\n(Transforma linhas em Markdown)"]
-        PDFLoader["PyPDFLoader & TextSplitter\n(chunk_size=800, overlap=150)"]
-        EmbeddingModel["Modelo de Embeddings\n(HuggingFace Local / Google / OpenAI)"]
-        FAISSStore[("Banco Vetorial FAISS\n(Indexação na Memória)")]
+        CSVLoader["Processador de CSV (Pandas)"]
+        PDFLoader["Processador de PDF (TextSplitter)"]
+        EmbeddingModel["Gerador de Embeddings"]
+        FAISSStore[("Índice Vetorial FAISS")]
     end
 
     subgraph RAG ["3. Agente & Cadeia RAG (agent.py)"]
-        HistAwareRetriever["History-Aware Retriever\n(Reformula pergunta com base no histórico)"]
-        MMRSearch["Busca MMR no FAISS\n(Busca os k=5 trechos mais relevantes)"]
-        PromptTemplate["Prompt do Sistema\n(Instruções + Contexto dos Docs)"]
-        LLMProvider["LLM\n(Groq / Gemini / OpenAI)"]
+        HistAwareRetriever["Retriever Ciente de Histórico"]
+        MMRSearch["Busca por Relevância (MMR)"]
+        PromptTemplate["Prompt do Sistema"]
+        LLMProvider["LLM (Groq / Gemini / OpenAI)"]
     end
 
-    Sidebar --> CSVLoader & PDFLoader
-    CSVLoader & PDFLoader --> EmbeddingModel
+    Sidebar --> CSVLoader
+    Sidebar --> PDFLoader
+    CSVLoader --> EmbeddingModel
+    PDFLoader --> EmbeddingModel
     EmbeddingModel --> FAISSStore
     
     UserInput --> HistAwareRetriever
@@ -55,8 +57,8 @@ flowchart TD
     HistAwareRetriever --> MMRSearch
     MMRSearch --> PromptTemplate
     PromptTemplate --> LLMProvider
-    LLMProvider --> Response["Resposta Formatada + Fontes Consultadas"]
-    Response --> UI
+    LLMProvider --> Response["Resposta + Fontes Consultadas"]
+    Response --> UserInput
 ```
 
 ### 🔄 Diagrama de Sequência (Ciclo de Vida de uma Pergunta)
