@@ -1,4 +1,4 @@
-# 🎸 Tone Master AI - Agente RAG Multiprovedor (PDFs & CSVs)🤖 Agente IA Multiprovedor - Leitor RAG de PDFs & CSVs
+# 🎸 Tone Master AI - Agente RAG Multiprovedor (PDFs & CSVs)
 
 Este projeto é uma aplicação interativa desenvolvida em Python e Streamlit que utiliza a arquitetura **RAG (Retrieval-Augmented Generation)** para permitir consultas inteligentes em documentos técnicos, manuais em formato PDF e tabelas estruturadas em CSV.
 
