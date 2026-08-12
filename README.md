@@ -137,7 +137,7 @@ sequenceDiagram
 
 #### 1. Clonar o repositório ou navegar até a pasta do projeto:
 ```bash
-cd /caminho/para/projeto-oracle-alura
+cd /caminho/para/tonemaster-ai-rag
 ```
 
 #### 2. Criar e ativar um ambiente virtual (venv):
